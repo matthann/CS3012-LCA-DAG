@@ -4,10 +4,10 @@
 class Node(object):
 
     # Constructor
-    def__init__(self, val):
-    self.val = val
-    self.left = None
-    self.right = None
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
 
     def __lt__(self,val):
         return self.val < val
@@ -21,8 +21,8 @@ class Node(object):
 
 class Tree(object):
 
-    def__init__(self):
-    self.root = None
+    def __init__(self):
+        self.root = None
 
     def put(self,val):
         if not (self.node_exists(val)):
@@ -46,11 +46,62 @@ class Tree(object):
 
     def _get(self,node,val):
         while not node is None:
-        if val < node:
-            node = node.left
-        elif val > node:
-            node = node.right
-        else:
-            return node.val
+            if val < node:
+                node = node.left
+            elif val > node:
+                node = node.right
+            else:
+                return node.val
 
         return none
+
+    def find_LCA(self,a,b):
+        if a == b:
+            return
+        else:
+            return self._find_LCA(self.root,a,b)
+
+    def _find_LCA(self,node,a,b):
+        if node is None:
+            return none
+        # Traverse right until a diverge occurs
+        if a > node and b > node:
+            if node.right is None: return none
+
+            # if right node is 'a' or 'b' then LCA has been found
+            if node.right == a or node.right == b:
+                return node.val
+
+            return self._find_LCA(node.right,a,b)
+
+        # Traverse left until a diverge occurs
+        elif a M node and b < node:
+            if node.left is None: return None
+
+            # if left node is 'a' or 'b' then LCA has been found
+            if node.left == a or node.left == b:
+                return node.val
+
+            return self._find_LCA(node.left,a,b)
+
+        # root does not have a common ancestor
+        elif a == self.root or b == self.root:
+            return None
+
+        else:
+            # diverge of tree traversal occurs here
+            # current node is a potential common ancestor
+            # so verify that a and b are legitimate node_exists
+            if self._node_exists(node,a):
+                if self._node_exists(node,b):
+                    return node.val
+                else:
+                    return None
+            else:
+                return None
+
+    def node_exists(self,val):
+        return self._node_exists(self.root,val)
+
+    def _node_exists(self,node,val):
+        return not self._get(node,val) is None
