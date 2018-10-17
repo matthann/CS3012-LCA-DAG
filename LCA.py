@@ -40,3 +40,17 @@ class Tree(object):
             node.val = val
 
         return node
+
+    def get(self,val):
+        return self._get(self.root,val)
+
+    def _get(self,node,val):
+        while not node is None:
+        if val < node:
+            node = node.left
+        elif val > node:
+            node = node.right
+        else:
+            return node.val
+
+        return none
