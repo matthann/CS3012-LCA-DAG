@@ -75,7 +75,7 @@ class Tree(object):
             return self._find_LCA(node.right,a,b)
 
         # Traverse left until a diverge occurs
-        elif a M node and b < node:
+        elif a < node and b < node:
             if node.left is None: return None
 
             # if left node is 'a' or 'b' then LCA has been found
@@ -105,3 +105,5 @@ class Tree(object):
 
     def _node_exists(self,node,val):
         return not self._get(node,val) is None
+
+        # add functions: delete, contains, size, median, height, max, min
