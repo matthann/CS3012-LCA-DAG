@@ -1,15 +1,10 @@
 import unittest
 from LCA import *
 
-
-
 class TestLCA(unittest.TestCase):
 
     def setUp(self):
         pass
-
-
-class TestStringMethods(unittest.TestCase):
 
     def test_constructor(self):
         tree = Tree()
@@ -32,9 +27,8 @@ class TestStringMethods(unittest.TestCase):
         tree = Tree()
         tree.put(2)
 
-        self.assertEqual(tree.find_common(2,2),None)
-        self.assertEqual(tree.find_common(2,1),None)
-
+        self.assertEqual(tree.find_LCA(2,2),None)
+        self.assertEqual(tree.find_LCA(2,1),None)
 
     # test order, LCA, not in tree, etc
     # test put [maybe also: delete, contains, size, median, height, max, min]

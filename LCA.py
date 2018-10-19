@@ -33,7 +33,7 @@ class Tree(object):
             node = Node(val)
 
         if val < node:
-            node.left = self._put(self.root,val)
+            node.left = self._put(node.left,val)
         elif val > node:
             node.right = self._put(node.right,val)
         else:
@@ -53,7 +53,7 @@ class Tree(object):
             else:
                 return node.val
 
-        return none
+        return None
 
     def find_LCA(self,a,b):
         if a == b:
@@ -63,10 +63,10 @@ class Tree(object):
 
     def _find_LCA(self,node,a,b):
         if node is None:
-            return none
+            return None
         # Traverse right until a diverge occurs
         if a > node and b > node:
-            if node.right is None: return none
+            if node.right is None: return None
 
             # if right node is 'a' or 'b' then LCA has been found
             if node.right == a or node.right == b:
