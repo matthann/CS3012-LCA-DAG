@@ -106,4 +106,15 @@ class Tree(object):
     def _node_exists(self,node,val):
         return not self._get(node,val) is None
 
-        # add functions: delete, contains, size, median, height, max, min
+    def height(self):
+        return self._height(self.root)
+
+    def _height(self,node):
+        if (node == None):
+            return -1;
+        else:
+            return 1 + max(self._height(node.left),self._height(node.right))
+
+    def max(node):
+        if (node.right != None): return max(node.right)
+        return node
