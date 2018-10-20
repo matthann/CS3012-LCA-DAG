@@ -74,5 +74,6 @@ class TestDAG(unittest.TestCase):
         #self.dag.add_edge(2, 3)
         #self.assertEqual(self.dag.predecessors(3), [2])
 
+
 if __name__ == '__main__':
     unittest.main()

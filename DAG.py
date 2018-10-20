@@ -35,6 +35,7 @@ class DAG(object):
 # add edge
 # VERTICES ??
 
+
     def downstream(self, node, graph=None):
         #Returns a list of all nodes this node has edges towards.
         if graph is None:
