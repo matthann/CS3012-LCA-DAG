@@ -29,13 +29,36 @@ class TestDAG(unittest.TestCase):
         self.assertTrue(self.dag.graph == {1: set(), 2: set()})
         #nothing should happen: pass can not be tested explicitly
 
-# add function to delete node, test it
+    def testDeleteNode(self):
+        self.dag.add_node(1)
+        self.dag.delete_node(1)
+        self.assertTrue(self.dag.graph == {})
+
+    def testDeleteNonExistingNode(self):
+        self.dag.add_node(1)
+        with self.assertRaises(KeyError) as ex:
+            self.dag.delete_node(2)
+
+        err = ex.exception
+        self.assertEqual(str(err), "'node 2 does not exist'")
+
+    def testDeleteNodeIfExists(self):
+        self.dag.add_node(1)
+        self.assertTrue(self.dag.graph == {1: set()})
+        self.dag.delete_node_if_exists(2)
+        self.assertTrue(self.dag.graph == {1: set()})
+        #nothing should happen: pass can not be tested explicitly
 
     def testResetDAG(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
         self.dag.reset_graph()
         self.assertTrue(self.dag.graph == {})
+
+
+
+# test for adding Edges, for independence , test sizes , downtsream
+#  leaves lca
 
     def testPredecessorsOnlyOne(self):
         self.dag.add_node(1)
@@ -66,6 +89,10 @@ class TestDAG(unittest.TestCase):
         self.dag.add_edge(1, 2)
         self.dag.add_edge(2, 3)
         self.assertEqual(self.dag.predecessors(3), [2])
+
+
+
+
 
 
 if __name__ == '__main__':
