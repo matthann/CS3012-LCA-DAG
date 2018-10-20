@@ -128,8 +128,23 @@ class DAG(object):
             )
         )
 
+    def all_leaves(self, graph=None):
+        #Return a list of all leaves (nodes with no downstreams)
+        if graph is None:
+            graph = self.graph
+        return [key for key in graph if not graph[key]]
 
-# downstreams leaves from dict
+    def from_dict(self, graph_dict):
+        # Reset the graph and build it from the passed dictionary.
+        # The dictionary takes the form of {node_name: [directed edges]}
+        self.reset_graph()
+        for new_node in six.iterkeys(graph_dict):
+            self.add_node(new_node)
+        for ind_node, dep_nodes in six.iteritems(graph_dict):
+            if not isinstance(dep_nodes, list):
+                raise TypeError('dict values must be lists')
+            for dep_node in dep_nodes:
+                self.add_edge(ind_node, dep_node)
 
     def ind_nodes(self, graph=None):
         # Returns a list of all independent nodes
