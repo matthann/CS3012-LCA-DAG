@@ -7,7 +7,7 @@ Python 2.6. While this can potentially change, the scope of the library
 is small enough that it is very likely that it will not.
 Also refer notes of original library author:
     https://github.com/thieman/py-dag/pull/23#issuecomment-328617005
-"""
+""" 
 # Copyright (c) 2010-2017 Benjamin Peterson
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
