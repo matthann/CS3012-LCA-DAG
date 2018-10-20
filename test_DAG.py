@@ -130,14 +130,14 @@ class test_DAG(unittest.TestCase):
         self.dag.add_edge(2, 3)
         self.assertEqual(self.dag.predecessors(3), [2])
 
-    def testFromDict(self):
+    def test_FromDict(self):
         self.dag.add_node(1)
         dict1 = {2: [3, 4], 3: [], 4: [3]}
         self.dag.from_dict(dict1)
         self.assertTrue(self.dag.graph == {
                         2: set([3, 4]), 3: set(), 4: set([3])})
 
-    def testFromDictWrongFormat(self):
+    def test_FromDictWrongFormat(self):
         self.dag.add_node(1)
         dict2 = {2: set([3, 4]), 3: set(), 4: set([3])}
         with self.assertRaises(TypeError) as ex:
@@ -146,6 +146,34 @@ class test_DAG(unittest.TestCase):
         err = ex.exception
         self.assertEqual(str(err), 'dict values must be lists')
 
+    def test_IndependentNodes(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(2, 3)
+        self.assertEqual(self.dag.ind_nodes(), [1])
+
+    def test_IndependentNodesMoreThanOne(self):
+        dict1 = {1: [4], 2: [4], 3: [4], 4: [
+            5, 6, 7], 5: [8], 6: [8], 7: [8], 8: []}
+        self.dag.from_dict(dict1)
+        self.assertEqual(self.dag.ind_nodes(), [1, 2, 3])
+
+    def test_SizeEmpty(self):
+        self.assertEqual(self.dag.size(), 0)
+
+    def test_SizeAdd(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.assertEqual(self.dag.size(), 3)
+
+    def test_SizeAddDelete(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.delete_node(2)
+        self.assertEqual(self.dag.size(), 1)
 
 if __name__ == '__main__':
     unittest.main()
