@@ -8,11 +8,11 @@ class TestDAG(unittest.TestCase):
 
     def testInit(self):
         self.dag1 = DAG()
-        self.assertTrue(self.dag.DAG == {})
+        self.assertTrue(self.dag1.graph == {})
 
     def testAddNode(self):
         self.dag.add_node(1)
-        self.assertTrue(self.dag.DAG == {1: set()})
+        self.assertTrue(self.dag.graph == {1: set()})
 
     def testAddDuplicatedNode(self):
         self.dag.add_node(1)
@@ -26,7 +26,7 @@ class TestDAG(unittest.TestCase):
         self.dag.add_node(1)
         self.dag.add_node_if_not_exists(1)
         self.dag.add_node_if_not_exists(2)
-        self.assertTrue(self.dag.DAG == {1: set(), 2: set()})
+        self.assertTrue(self.dag.graph == {1: set(), 2: set()})
         #nothing should happen: pass can not be tested explicitly
 
 # add function to delete node, test it
@@ -34,45 +34,38 @@ class TestDAG(unittest.TestCase):
     def testResetDAG(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
-        self.dag.reset_DAG()
-        self.assertTrue(self.dag.DAG == {})
-
-
-#will finish predecessor testing as soon as my add_edge function is owrking
+        self.dag.reset_graph()
+        self.assertTrue(self.dag.graph == {})
 
     def testPredecessorsOnlyOne(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
-        # will add in the below once add_edge function is working
-        #self.dag.add_edge(1, 2)
-        #self.assertEqual(self.dag.predecessors(2), [1])
+        self.dag.add_edge(1, 2)
+        self.assertEqual(self.dag.predecessors(2), [1])
 
     def testPredecessorsMoreThanOne(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
         self.dag.add_node(3)
         self.dag.add_node(4)
-# will add in the below once add_edge function is working
-        #self.dag.add_edge(1, 2)
-        #self.dag.add_edge(3, 2)
-        #self.dag.add_edge(4, 2)
-        #self.assertEqual(self.dag.predecessors(2), [1, 3, 4])
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(3, 2)
+        self.dag.add_edge(4, 2)
+        self.assertEqual(self.dag.predecessors(2), [1, 3, 4])
 
     def testPredecessorsRoot(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
-        # will add in the below once add_edge function is working
-        #self.dag.add_edge(1, 2)
-        #self.assertEqual(self.dag.predecessors(1), [])
+        self.dag.add_edge(1, 2)
+        self.assertEqual(self.dag.predecessors(1), [])
 
     def testPredecessorsMoreLevels(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
         self.dag.add_node(3)
-        # will add in the below once add_edge function is working
-        #self.dag.add_edge(1, 2)
-        #self.dag.add_edge(2, 3)
-        #self.assertEqual(self.dag.predecessors(3), [2])
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(2, 3)
+        self.assertEqual(self.dag.predecessors(3), [2])
 
 
 if __name__ == '__main__':
