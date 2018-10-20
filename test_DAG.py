@@ -8,11 +8,11 @@ class TestDAG(unittest.TestCase):
 
     def testInit(self):
         self.dag1 = DAG()
-        self.assertTrue(self.dag.graph == {})
+        self.assertTrue(self.dag.DAG == {})
 
     def testAddNode(self):
         self.dag.add_node(1)
-        self.assertTrue(self.dag.graph == {1: set()})
+        self.assertTrue(self.dag.DAG == {1: set()})
 
     def testAddDuplicatedNode(self):
         self.dag.add_node(1)
@@ -26,16 +26,16 @@ class TestDAG(unittest.TestCase):
         self.dag.add_node(1)
         self.dag.add_node_if_not_exists(1)
         self.dag.add_node_if_not_exists(2)
-        self.assertTrue(self.dag.graph == {1: set(), 2: set()})
+        self.assertTrue(self.dag.DAG == {1: set(), 2: set()})
         #nothing should happen: pass can not be tested explicitly
 
 # add function to delete node, test it
 
-    def testResetGraph(self):
+    def testResetDAG(self):
         self.dag.add_node(1)
         self.dag.add_node(2)
-        self.dag.reset_graph()
-        self.assertTrue(self.dag.graph == {})
+        self.dag.reset_DAG()
+        self.assertTrue(self.dag.DAG == {})
 
 
 #will finish predecessor testing as soon as my add_edge function is owrking

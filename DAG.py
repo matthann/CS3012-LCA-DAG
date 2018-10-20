@@ -1,10 +1,15 @@
 from copy import copy, deepcopy
 from collections import deque
 
+import six_subset as six
+
 try:
     from collections import OrderedDict
 except ImportError:
     from ordereddict import OrderedDict
+
+class DAGValidationError(Exception):
+    pass
 
 # Directed acyclic graph implementation
 class DAG(object):
@@ -31,10 +36,66 @@ class DAG(object):
         except KeyError:
             pass
 
-# delete node
-# add edge
-# VERTICES ??
+    def delete_node(self, node_name, graph=None):
+        # Deletes this node and all edges referencing it
+        if not graph:
+            graph = self.graph
+        if node_name not in graph:
+            raise KeyError('node %s does not exist' % node_name)
+        graph.pop(node_name)
 
+        for node, edges in six.iteritems(graph):
+            if node_name in edges:
+                edges.remove(node_name)
+
+    def delete_node_if_exists(self, node_name, graph=None):
+        try:
+            self.delete_node(node_name, graph=graph)
+        except KeyError:
+            pass
+
+    def add_edge(self, ind_node, dep_node, graph=None):
+        # Add an edge between specificied nodes
+        if not graph:
+            graph = self.graph
+        if ind_node not in graph or dep_node not in graph:
+            raise KeyError('one or more nodes do not exist in graph')
+        test_graph = deepcopy(graph)
+        test_graph[ind_node].add(dep_node)
+        is_valid, message = self.validate(test_graph)
+        if is_valid:
+            graph[ind_node].add(dep_node)
+        else:
+            raise DAGValidationError()
+
+    def delete_edge(self, ind_node, dep_node, graph=None):
+        #Delete an edge from the graph.
+        if not graph:
+            graph = self.graph
+        if dep_node not in graph.get(ind_node, []):
+            raise KeyError('this edge does not exist in graph')
+        graph[ind_node].remove(dep_node)
+
+    def rename_edges(self, old_task_name, new_task_name, graph=None):
+        # Changes references to a task in existing edges
+        if not graph:
+            graph = self.graph
+        for node, edges in graph.items():
+
+            if node == old_task_name:
+                graph[new_task_name] = copy(edges)
+                del graph[old_task_name]
+
+            else:
+                if old_task_name in edges:
+                    edges.remove(old_task_name)
+                    edges.add(new_task_name)
+
+    def predecessors(self, node, graph=None):
+        #Returns a list of all predecessors of the given node
+        if graph is None:
+            graph = self.graph
+        return [key for key in graph if node in graph[key]]
 
     def downstream(self, node, graph=None):
         #Returns a list of all nodes this node has edges towards.
@@ -67,19 +128,61 @@ class DAG(object):
             )
         )
 
-    def delete_edge(self, ind_node, dep_node, graph=None):
-        #Delete an edge from the graph.
-        if not graph:
-            graph = self.graph
-        if dep_node not in graph.get(ind_node, []):
-            raise KeyError('this edge does not exist in graph')
-        graph[ind_node].remove(dep_node)
 
-    def predecessors(self, node, graph=None):
-        #Returns a list of all predecessors of the given node
+# downstreams leaves from dict
+
+    def ind_nodes(self, graph=None):
+        # Returns a list of all independent nodes
         if graph is None:
             graph = self.graph
-        return [key for key in graph if node in graph[key]]
+
+        dependent_nodes = set(
+            node for dependents in six.itervalues(graph) for node in dependents
+        )
+        return [node for node in graph.keys() if node not in dependent_nodes]
+
+    def validate(self, graph=None):
+        # returns boolean and message if graph is valid
+        graph = graph if graph is not None else self.graph
+        if len(self.ind_nodes(graph)) == 0:
+            return (False, 'no independent nodes detected')
+        try:
+            self.topological_sort(graph)
+        except ValueError:
+            return (False, 'failed topological sort')
+        return (True, 'valid')
+
+    def topological_sort(self, graph=None):
+        # Returns a topological ordering of the DAG. Error raised if graph is invalid.
+        if graph is None:
+            graph = self.graph
+
+        in_degree = {}
+        for u in graph:
+            in_degree[u] = 0
+
+        for u in graph:
+            for v in graph[u]:
+                in_degree[v] += 1
+
+        queue = deque()
+        for u in in_degree:
+            if in_degree[u] == 0:
+                queue.appendleft(u)
+
+        l = []
+        while queue:
+            u = queue.pop()
+            l.append(u)
+            for v in graph[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.appendleft(v)
+
+        if len(l) == len(graph):
+            return l
+        else:
+            raise ValueError('graph is not acyclic')
 
     def size(self):
         return len(self.graph)
