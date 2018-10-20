@@ -124,7 +124,7 @@ class DAG(object):
         return list(
             filter(
                 lambda node: node in nodes_seen,
-                self.__topological_sort(graph=graph)
+                self.topological_sort(graph=graph)
             )
         )
 

@@ -97,7 +97,7 @@ class test_DAG(unittest.TestCase):
         err = ex.exception
         self.assertEqual(str(err), "'this edge does not exist in graph'")
 
-# test_ for independence , sizes , downtsream
+# test for downtsream
 #  leaves lca
 
     def test_PredecessorsOnlyOne(self):
@@ -174,6 +174,55 @@ class test_DAG(unittest.TestCase):
         self.dag.add_node(2)
         self.dag.delete_node(2)
         self.assertEqual(self.dag.size(), 1)
+
+    def test_Downstream(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(1, 3)
+        self.assertEqual(self.dag.downstream(1), [2, 3])
+
+    def test_DownstreamEmpty(self):
+        with self.assertRaises(KeyError) as ex:
+            self.dag.downstream(1)
+
+        err = ex.exception
+        self.assertEqual(str(err), "'node 1 is not in graph'")
+
+    def test_DownstreamLeaf(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(1, 3)
+        self.assertEqual(self.dag.downstream(2), [])
+
+    def test_AllDownstreams(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(2, 3)
+        self.assertEqual(self.dag.all_downstreams(1), [2, 3])
+
+    def test_AllDownstreamsLevels(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_node(4)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(2, 3)
+        self.dag.add_edge(2, 4)
+        self.assertEqual(self.dag.all_downstreams(1), [2, 3, 4])
+
+    def test_AllDownstreamsLeaf(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(2, 3)
+        self.assertEqual(self.dag.downstream(3), [])
 
 if __name__ == '__main__':
     unittest.main()
