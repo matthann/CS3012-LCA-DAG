@@ -27,7 +27,6 @@ class test_DAG(unittest.TestCase):
         self.dag.add_node_if_not_exists(1)
         self.dag.add_node_if_not_exists(2)
         self.assertTrue(self.dag.graph == {1: set(), 2: set()})
-        #nothing should happen: pass can not be test_ed explicitly
 
     def test_DeleteNode(self):
         self.dag.add_node(6)
@@ -47,7 +46,6 @@ class test_DAG(unittest.TestCase):
         self.assertTrue(self.dag.graph == {1: set()})
         self.dag.delete_node_if_exists(2)
         self.assertTrue(self.dag.graph == {1: set()})
-        #nothing should happen: pass can not be test_ed explicitly
 
     def test_ResetDAG(self):
         self.dag.add_node(1)
@@ -96,9 +94,6 @@ class test_DAG(unittest.TestCase):
 
         err = ex.exception
         self.assertEqual(str(err), "'this edge does not exist in graph'")
-
-# test for downtsream
-#  leaves lca
 
     def test_PredecessorsOnlyOne(self):
         self.dag.add_node(1)
@@ -223,6 +218,92 @@ class test_DAG(unittest.TestCase):
         self.dag.add_edge(1, 2)
         self.dag.add_edge(2, 3)
         self.assertEqual(self.dag.downstream(3), [])
+
+    def testAllLeaves(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_edge(1, 2)
+        self.dag.add_edge(1, 3)
+        self.assertEqual(self.dag.all_leaves(), [2, 3])
+
+    def testLCAIndependentNodes(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_node(4)
+        self.dag.add_node(5)
+        self.dag.add_node(6)
+        self.dag.add_node(7)
+
+        self.dag.add_edge(2, 1)
+        self.dag.add_edge(3, 2)
+        self.dag.add_edge(4, 3)
+        self.dag.add_edge(7, 4)
+        self.dag.add_edge(7, 6)
+        self.dag.add_edge(6, 5)
+        self.dag.add_edge(5, 2)
+
+        self.assertEqual(self.dag.LCA(3,6), {7})
+
+    def testLCAParentChild(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_node(4)
+        self.dag.add_node(5)
+        self.dag.add_node(6)
+        self.dag.add_node(7)
+
+        self.dag.add_edge(2, 1)
+        self.dag.add_edge(3, 2)
+        self.dag.add_edge(4, 3)
+        self.dag.add_edge(7, 4)
+        self.dag.add_edge(7, 6)
+        self.dag.add_edge(6, 5)
+        self.dag.add_edge(5, 2)
+
+        self.assertEqual(self.dag.LCA(2, 5), {5})
+
+    def testLCASelf(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_node(4)
+        self.dag.add_node(5)
+        self.dag.add_node(6)
+        self.dag.add_node(7)
+
+        self.dag.add_edge(2, 1)
+        self.dag.add_edge(3, 2)
+        self.dag.add_edge(4, 3)
+        self.dag.add_edge(7, 4)
+        self.dag.add_edge(7, 6)
+        self.dag.add_edge(6, 5)
+        self.dag.add_edge(5, 2)
+
+        self.assertEqual(self.dag.LCA(3, 3), {4})
+
+    def testLCARoots(self):
+        self.dag.add_node(1)
+        self.dag.add_node(2)
+        self.dag.add_node(3)
+        self.dag.add_node(4)
+        self.dag.add_node(5)
+        self.dag.add_node(6)
+        self.dag.add_node(7)
+        self.dag.add_node(8)
+
+        self.dag.add_edge(2, 1)
+        self.dag.add_edge(3, 2)
+        self.dag.add_edge(4, 3)
+        self.dag.add_edge(7, 4)
+        self.dag.add_edge(7, 6)
+        self.dag.add_edge(8, 6)
+        self.dag.add_edge(6, 5)
+        self.dag.add_edge(5, 2)
+
+        self.assertEqual(self.dag.LCA(7, 8), {})
 
 if __name__ == '__main__':
     unittest.main()

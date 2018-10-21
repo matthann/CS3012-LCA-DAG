@@ -201,3 +201,28 @@ class DAG(object):
 
     def size(self):
         return len(self.graph)
+
+    # below LCA
+    def LCA(self, nodeA, nodeB):
+        roots = set(self.ind_nodes())
+        if nodeA == nodeB:
+            return set(self.predecessors(nodeA))
+        elif nodeA in roots and nodeB in roots:
+            return {}
+        elif nodeA in roots:
+            return {nodeA}
+        elif nodeB in roots:
+            return {nodeB}
+        else:
+            predecessorsA = set([nodeA])
+            predecessorsB = set([nodeB])
+            #can not iterate a set and update it at the same time
+            while predecessorsA.intersection(predecessorsB) == set():
+                for node in predecessorsA.copy():
+                    predecessorsA = predecessorsA.union(
+                        set([pred for pred in self.predecessors(node)]))
+                for node in predecessorsB.copy():
+                    predecessorsB = predecessorsB.union(
+                        set([pred for pred in self.predecessors(node)]))
+
+            return predecessorsA.intersection(predecessorsB)
