@@ -1,5 +1,5 @@
-# Python
-CS3012 assignment submission in Python for both LCA and DAG
+# CS3012
+CS3012 assignment submission in Python for both LCA and DAG.
 
 
  <i><b>Explanation of the LCA</b></i>
